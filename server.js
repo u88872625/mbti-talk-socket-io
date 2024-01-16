@@ -1,6 +1,7 @@
 const http = require("http");
 const express = require("express");
 const socketIo = require("socket.io");
+const cors = require("cors");
 
 const PORT = process.env.PORT || 3000;
 const router = require("./router");
