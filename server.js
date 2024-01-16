@@ -6,8 +6,16 @@ const PORT = process.env.PORT || 3000;
 const router = require("./router");
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+  cors: {
+    origin: "localhost:3000/",
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
 
+app.use(cors());
+app.options("*", cors());
 app.use(router);
 
 io.on("connection", (socket) => {
