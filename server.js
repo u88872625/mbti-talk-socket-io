@@ -3,9 +3,12 @@ const express = require("express");
 const socketIo = require("socket.io");
 
 const PORT = process.env.PORT || 3000;
+const router = require("./router");
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
+
+app.use(router);
 
 io.on("connection", (socket) => {
   console.log("A user connected");
