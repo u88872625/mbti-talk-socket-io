@@ -3,6 +3,12 @@ const express = require("express");
 const socketIo = require("socket.io");
 const cors = require("cors");
 
+const {
+  userJoinRoom,
+  getRandomRoomNum,
+  removeUserFromRoom,
+} = require("./users");
+
 const PORT = process.env.PORT || 3000;
 const router = require("./router");
 const app = express();
@@ -22,12 +28,53 @@ app.use(router);
 io.on("connection", (socket) => {
   console.log("A user connected");
 
-  socket.on("chat message", (msg) => {
-    io.emit("chat message", msg);
+  socket.on("selectMBTI", ({ mbtiType, mbtiImage }) => {
+    socket.mbtiType = mbtiType;
+    socket.mbtiImage = mbtiImage;
   });
 
-  socket.on("disconnect", () => {
-    console.log("User disconnected");
+  socket.on("join", ({ roomInfo }) => {
+    const userInfo = {
+      id: socket.id,
+      mbtiType: socket.mbtiType,
+      mbtiImage: socket.mbtiImage,
+    };
+    userJoinRoom(userInfo, roomInfo);
+
+    if (userInfo.id && roomInfo.room) {
+      socket.emit("message", {
+        user: "admin",
+        text: `${userInfo.mbtiType}已加入聊天室`,
+      });
+      socket.broadcast.to(roomInfo.room).emit("message", {
+        user: "admin",
+        text: `${userInfo.mbtiType}已加入聊天室`,
+      });
+    }
+    socket.join(roomInfo.room);
+  });
+
+  socket.on("sendMessage", ({ message, userInfo, roomInfo }) => {
+    io.to(roomInfo.room).emit("message", {
+      user: userInfo.mbtiType,
+      text: message,
+    });
+  });
+
+  socket.on("randomChat", () => {
+    const randomRoonNum = getRandomRoomNum();
+    socket.emit("randomRoonNum", randomRoonNum);
+  });
+
+  socket.on("leaveRoom", ({ userInfo, roomInfo }) => {
+    removeUserFromRoom(userInfo, roomInfo);
+    socket.leave(roomInfo.room);
+    if (userInfo.id) {
+      io.to(roomInfo.room).emit("message", {
+        user: "admin",
+        text: "對方已離開聊天室",
+      });
+    }
   });
 });
 
