@@ -61,7 +61,6 @@ const getRandomRoomNum = () => {
 };
 
 module.exports = {
-  addUser,
   userJoinRoom,
   getRandomRoomNum,
   removeUserFromRoom,
