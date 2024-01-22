@@ -62,8 +62,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("randomChat", () => {
-    const randomRoonNum = getRandomRoomNum();
-    socket.emit("randomRoonNum", randomRoonNum);
+    const randomRoomNum = getRandomRoomNum();
+    socket.emit("randomRoomNum", randomRoomNum);
   });
 
   socket.on("leaveRoom", ({ userInfo, roomInfo }) => {
