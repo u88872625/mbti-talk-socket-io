@@ -58,6 +58,7 @@ io.on("connection", (socket) => {
     io.to(roomInfo.room).emit("message", {
       user: userInfo.mbtiType,
       text: message,
+      image: userInfo.mbtiImage,
     });
   });
 
