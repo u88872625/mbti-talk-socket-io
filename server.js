@@ -82,7 +82,7 @@ io.on("connection", (socket) => {
   socket.on("leaveRoom", ({ userInfo, roomInfo }) => {
     removeUserFromRoom(userInfo, roomInfo);
     socket.leave(roomInfo.room);
-    if (userInfo.id) {
+    if (userInfo.mbtiType) {
       io.to(roomInfo.room).emit("message", {
         user: "admin",
         text: "對方已離開聊天室",
