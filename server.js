@@ -21,6 +21,8 @@ const io = socketIo(server, {
   },
 });
 
+let waitingUsers = [];
+
 app.use(cors());
 app.options("*", cors());
 app.use(router);
@@ -63,8 +65,18 @@ io.on("connection", (socket) => {
   });
 
   socket.on("randomChat", () => {
-    const randomRoomNum = getRandomRoomNum();
-    socket.emit("randomRoomNum", randomRoomNum);
+    waitingUsers.push({ socket, userInfo: socket.mbtiType });
+    if (waitingUsers.length >= 2) {
+      const user1 = waitingUsers.shift();
+      const user2 = waitingUsers.shift();
+      const randomRoomNum = getRandomRoomNum();
+
+      user1.socket.join(randomRoomNum);
+      user2.socket.join(randomRoomNum);
+
+      user1.socket.emit("randomRoomNum", randomRoomNum);
+      user2.socket.emit("randomRoomNum", randomRoomNum);
+    }
   });
 
   socket.on("leaveRoom", ({ userInfo, roomInfo }) => {
