@@ -5,7 +5,6 @@ const cors = require("cors");
 
 const {
   addUser,
-  updateUser,
   userJoinRoom,
   getRandomRoomNum,
   removeUserFromRoom,
@@ -32,14 +31,8 @@ app.use(router);
 io.on("connection", (socket) => {
   console.log("A user connected");
 
-  socket.on("selectMBTI", ({ id, mbtiType, mbtiImage }) => {
-    let user;
-    if (id) {
-      user = updateUser({ id, mbtiType, mbtiImage });
-    } else {
-      const result = addUser({ id: socket.id, mbtiType, mbtiImage });
-      user = result.user;
-    }
+  socket.on("selectMBTI", ({ mbtiType, mbtiImage }) => {
+    const { error, user } = addUser({ id: socket.id, mbtiType, mbtiImage });
 
     if (user) {
       console.log("Sending user info:", user);
