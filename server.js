@@ -37,6 +37,7 @@ io.on("connection", (socket) => {
     // socket.mbtiType = mbtiType;
     // socket.mbtiImage = mbtiImage;
     if (user) {
+      console.log("Sending user info:", user);
       socket.emit("userInfo", user);
     } else {
       socket.emit("error", error);
