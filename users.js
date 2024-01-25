@@ -11,7 +11,7 @@ const addUser = ({ id, mbtiType, mbtiImage }) => {
 };
 
 const updateUser = ({ id, mbtiType, mbtiImage }) => {
-  const userIndex = users.find((user) => user.id === id);
+  const userIndex = users.findIndex((user) => user.id === id);
   if (userIndex !== -1) {
     users[userIndex].mbtiType = mbtiType;
     users[userIndex].mbtiImage = mbtiImage;
