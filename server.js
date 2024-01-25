@@ -43,11 +43,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("join", ({ roomInfo, userInfo }) => {
-    // const userInfo = {
-    //   id: socket.id,
-    //   mbtiType: socket.mbtiType,
-    //   mbtiImage: socket.mbtiImage,
-    // };
     userJoinRoom(userInfo, roomInfo);
 
     if (userInfo.mbtiType && roomInfo.room) {
@@ -66,6 +61,7 @@ io.on("connection", (socket) => {
   socket.on("sendMessage", ({ message, userInfo, roomInfo }) => {
     console.log(`Message sent in room ${roomInfo.room}: ${message}`);
     io.to(roomInfo.room).emit("message", {
+      id: userInfo.id,
       user: userInfo.mbtiType,
       text: message,
       image: userInfo.mbtiImage,
