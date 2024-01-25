@@ -50,7 +50,7 @@ io.on("connection", (socket) => {
     // };
     userJoinRoom(userInfo, roomInfo);
 
-    if (userInfo.id && roomInfo.room) {
+    if (userInfo.mbtiType && roomInfo.room) {
       socket.emit("message", {
         user: "admin",
         text: `${userInfo.mbtiType}已加入聊天室`,
@@ -64,6 +64,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", ({ message, userInfo, roomInfo }) => {
+    console.log(`Message sent in room ${roomInfo.room}: ${message}`);
     io.to(roomInfo.room).emit("message", {
       user: userInfo.mbtiType,
       text: message,
