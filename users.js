@@ -1,7 +1,14 @@
+let users = [];
 let userInLobby = [];
 let userInPassword = [];
 let userInRandom = [];
 let randomRooms = [];
+
+const addUser = ({ id, mbtiType, mbtiImage }) => {
+  const user = { id, mbtiType, mbtiImage };
+  users.push(user);
+  return { user };
+};
 
 // 選擇聊天模式
 const userJoinRoom = (userInfo, roomInfo) => {
@@ -61,6 +68,7 @@ const getRandomRoomNum = () => {
 };
 
 module.exports = {
+  addUser,
   userJoinRoom,
   getRandomRoomNum,
   removeUserFromRoom,

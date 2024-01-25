@@ -4,6 +4,7 @@ const socketIo = require("socket.io");
 const cors = require("cors");
 
 const {
+  addUser,
   userJoinRoom,
   getRandomRoomNum,
   removeUserFromRoom,
@@ -31,16 +32,22 @@ io.on("connection", (socket) => {
   console.log("A user connected");
 
   socket.on("selectMBTI", ({ mbtiType, mbtiImage }) => {
-    socket.mbtiType = mbtiType;
-    socket.mbtiImage = mbtiImage;
+    const { error, user } = addUser({ id: socket.id, mbtiType, mbtiImage });
+    // socket.mbtiType = mbtiType;
+    // socket.mbtiImage = mbtiImage;
+    if (user) {
+      socket.emit("userInfo", user);
+    } else {
+      socket.emit("error", error);
+    }
   });
 
-  socket.on("join", ({ roomInfo }) => {
-    const userInfo = {
-      id: socket.id,
-      mbtiType: socket.mbtiType,
-      mbtiImage: socket.mbtiImage,
-    };
+  socket.on("join", ({ roomInfo, userInfo }) => {
+    // const userInfo = {
+    //   id: socket.id,
+    //   mbtiType: socket.mbtiType,
+    //   mbtiImage: socket.mbtiImage,
+    // };
     userJoinRoom(userInfo, roomInfo);
 
     if (userInfo.id && roomInfo.room) {
