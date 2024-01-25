@@ -10,6 +10,16 @@ const addUser = ({ id, mbtiType, mbtiImage }) => {
   return { user };
 };
 
+const updateUser = ({ id, mbtiType, mbtiImage }) => {
+  const userIndex = users.find((user) => user.id === id);
+  if (userIndex !== -1) {
+    users[userIndex].mbtiType = mbtiType;
+    users[userIndex].mbtiImage = mbtiImage;
+    return users[userIndex];
+  }
+  return null;
+};
+
 // 選擇聊天模式
 const userJoinRoom = (userInfo, roomInfo) => {
   const user = { userInfo, roomInfo };
@@ -69,6 +79,7 @@ const getRandomRoomNum = () => {
 
 module.exports = {
   addUser,
+  updateUser,
   userJoinRoom,
   getRandomRoomNum,
   removeUserFromRoom,

@@ -5,6 +5,7 @@ const cors = require("cors");
 
 const {
   addUser,
+  updateUser,
   userJoinRoom,
   getRandomRoomNum,
   removeUserFromRoom,
@@ -12,7 +13,6 @@ const {
 
 const PORT = process.env.PORT || 3000;
 const router = require("./router");
-const { userInfo } = require("os");
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -32,10 +32,15 @@ app.use(router);
 io.on("connection", (socket) => {
   console.log("A user connected");
 
-  socket.on("selectMBTI", ({ mbtiType, mbtiImage }) => {
-    const { error, user } = addUser({ id: socket.id, mbtiType, mbtiImage });
-    // socket.mbtiType = mbtiType;
-    // socket.mbtiImage = mbtiImage;
+  socket.on("selectMBTI", ({ id, mbtiType, mbtiImage }) => {
+    let user;
+    if (id) {
+      user = updateUser({ id, mbtiType, mbtiImage });
+    } else {
+      const result = addUser({ id: socket.id, mbtiType, mbtiImage });
+      user = result.user;
+    }
+
     if (user) {
       console.log("Sending user info:", user);
       socket.emit("userInfo", user);
@@ -47,7 +52,7 @@ io.on("connection", (socket) => {
   socket.on("join", ({ roomInfo, userInfo }) => {
     userJoinRoom(userInfo, roomInfo);
 
-    if (userInfo.mbtiType && roomInfo.room) {
+    if (userInfo.id && roomInfo.room) {
       socket.emit("message", {
         user: "admin",
         text: `${userInfo.mbtiType}已加入聊天室`,
@@ -89,7 +94,7 @@ io.on("connection", (socket) => {
   socket.on("leaveRoom", ({ userInfo, roomInfo }) => {
     removeUserFromRoom(userInfo, roomInfo);
     socket.leave(roomInfo.room);
-    if (userInfo.mbtiType) {
+    if (userInfo.id) {
       io.to(roomInfo.room).emit("message", {
         user: "admin",
         text: "對方已離開聊天室",
