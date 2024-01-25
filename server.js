@@ -12,6 +12,7 @@ const {
 
 const PORT = process.env.PORT || 3000;
 const router = require("./router");
+const { userInfo } = require("os");
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -68,6 +69,7 @@ io.on("connection", (socket) => {
     });
   });
 
+  console.log(userInfo);
   socket.on("randomChat", () => {
     waitingUsers.push({ socket, userInfo: socket.mbtiType });
     if (waitingUsers.length >= 2) {
