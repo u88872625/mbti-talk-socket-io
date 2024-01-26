@@ -3,11 +3,27 @@ let userInLobby = [];
 let userInPassword = [];
 let userInRandom = [];
 let randomRooms = [];
+let waitingForMatch = {};
 
 const addUser = ({ id, mbtiType, mbtiImage }) => {
   const user = { id, mbtiType, mbtiImage };
   users.push(user);
   return { user };
+};
+
+const addToMatchQueue = (userInfo) => {
+  const { mbtiType, id } = userInfo;
+  if (!waitingForMatch[mbtiType]) {
+    waitingForMatch[mbtiType] = [];
+  }
+  waitingForMatch[mbtiType].push(id);
+};
+
+const findMatch = (mbtiType) => {
+  if (waitingForMatch[mbtiType] && waitingForMatch[mbtiType].length > 0) {
+    return waitingForMatch[mbtiType].shift();
+  }
+  return null;
 };
 
 // 選擇聊天模式
@@ -70,6 +86,8 @@ const getRandomRoomNum = () => {
 module.exports = {
   addUser,
   userJoinRoom,
+  addToMatchQueue,
+  findMatch,
   getRandomRoomNum,
   removeUserFromRoom,
 };

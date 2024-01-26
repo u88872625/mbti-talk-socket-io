@@ -6,6 +6,8 @@ const cors = require("cors");
 const {
   addUser,
   userJoinRoom,
+  addToMatchQueue,
+  findMatch,
   getRandomRoomNum,
   removeUserFromRoom,
 } = require("./users");
@@ -80,6 +82,21 @@ io.on("connection", (socket) => {
 
       user1.socket.emit("randomRoomNum", randomRoomNum);
       user2.socket.emit("randomRoomNum", randomRoomNum);
+    }
+  });
+
+  socket.on("requestMatch", ({ mbtiType }) => {
+    const userInfo = { id: socket.id, mbtiType };
+    addToMatchQueue(userInfo);
+
+    const matchId = findMatch(mbtiType);
+    if (matchId) {
+      const roomId = getRandomRoomNum();
+      socket.join(roomId);
+      io.to(matchId).socketsJoin(roomId);
+
+      io.to(socket.id).emit("matchFound", { roomId });
+      io.to(matchId).emit("matchFound", { roomId });
     }
   });
 
