@@ -90,7 +90,7 @@ io.on("connection", (socket) => {
     addToMatchQueue(userInfo);
 
     const matchId = findMatch(mbtiType);
-    if (matchId) {
+    if (matchId && matchId !== socket.id) {
       const roomId = getRandomRoomNum();
       socket.join(roomId);
       io.to(matchId).socketsJoin(roomId);
