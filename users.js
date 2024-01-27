@@ -28,6 +28,7 @@ const findMatch = (mbtiType, currentId) => {
       }
     }
   }
+  console.log(waitingForMatch);
   return null;
 };
 

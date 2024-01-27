@@ -89,8 +89,8 @@ io.on("connection", (socket) => {
     const userInfo = { id: socket.id, mbtiType };
     addToMatchQueue(userInfo);
 
-    const matchId = findMatch(mbtiType);
-    if (matchId && matchId !== socket.id) {
+    const matchId = findMatch(userInfo);
+    if (matchId && matchId !== userInfo.id) {
       const roomId = getRandomRoomNum();
       socket.join(roomId);
       io.to(matchId).socketsJoin(roomId);
@@ -101,6 +101,7 @@ io.on("connection", (socket) => {
       io.to(socket.id).emit("matchFound", { roomId });
       io.to(matchId).emit("matchFound", { roomId });
     }
+    console.log(`request:${userInfo}`);
   });
 
   socket.on("leaveRoom", ({ userInfo, roomInfo }) => {
