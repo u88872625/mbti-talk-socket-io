@@ -19,9 +19,13 @@ const addToMatchQueue = (userInfo) => {
   waitingForMatch[mbtiType].push(id);
 };
 
-const findMatch = (mbtiType) => {
-  if (waitingForMatch[mbtiType] && waitingForMatch[mbtiType].length > 0) {
-    return waitingForMatch[mbtiType].shift();
+const findMatch = (mbtiType, currentId) => {
+  if (waitingForMatch[mbtiType]) {
+    for (let i = 0; i < waitingForMatch[mbtiType]; i++) {
+      if (waitingForMatch[mbtiType][i] !== currentId) {
+        return waitingForMatch[mbtiType].splice(i, 1)[0];
+      }
+    }
   }
   return null;
 };
