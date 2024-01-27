@@ -17,6 +17,7 @@ const addToMatchQueue = (userInfo) => {
     waitingForMatch[mbtiType] = [];
   }
   waitingForMatch[mbtiType].push(id);
+  console.log(`User ${id} added to match queue for ${mbtiType}`);
 };
 
 const findMatch = (mbtiType, currentId) => {
