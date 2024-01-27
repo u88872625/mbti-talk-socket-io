@@ -95,6 +95,9 @@ io.on("connection", (socket) => {
       socket.join(roomId);
       io.to(matchId).socketsJoin(roomId);
 
+      console.log(
+        `Emitting matchFound to ${socket.id} and ${matchId} with roomId: ${roomId}`
+      );
       io.to(socket.id).emit("matchFound", { roomId });
       io.to(matchId).emit("matchFound", { roomId });
     }
