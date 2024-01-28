@@ -89,7 +89,7 @@ io.on("connection", (socket) => {
     const userInfo = { id: socket.id, mbtiType };
     addToMatchQueue(userInfo);
 
-    const matchId = findMatch(userInfo);
+    const matchId = findMatch(mbtiType, userInfo.id);
     console.log(matchId);
 
     if (matchId && matchId !== userInfo.id) {
