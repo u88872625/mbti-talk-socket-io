@@ -89,7 +89,7 @@ io.on("connection", (socket) => {
     const userInfo = { id: socket.id, mbtiType };
     addToMatchQueue(userInfo);
 
-    const matchId = findMatch(mbtiType, userInfo.id);
+    const matchId = findMatch(mbtiType);
     console.log(`Matching ID for ${mbtiType}: ${matchId}`);
 
     if (matchId && matchId !== userInfo.id) {
@@ -103,7 +103,7 @@ io.on("connection", (socket) => {
       io.to(socket.id).emit("matchFound", { roomId });
       io.to(matchId).emit("matchFound", { roomId });
     }
-    console.log(`request:${userInfo.id},${userJoinRoom.mbtiType}`);
+    console.log(`request:${userInfo.id},${userInfo.mbtiType}`);
   });
 
   socket.on("leaveRoom", ({ userInfo, roomInfo }) => {
