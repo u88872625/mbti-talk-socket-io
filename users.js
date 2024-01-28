@@ -22,7 +22,7 @@ const addToMatchQueue = (userInfo) => {
 
 const findMatch = (mbtiType, currentId) => {
   if (waitingForMatch[mbtiType]) {
-    for (let i = 0; i < waitingForMatch[mbtiType]; i++) {
+    for (let i = 0; i < waitingForMatch[mbtiType].length; i++) {
       if (waitingForMatch[mbtiType][i] !== currentId) {
         return waitingForMatch[mbtiType].splice(i, 1)[0];
       }
