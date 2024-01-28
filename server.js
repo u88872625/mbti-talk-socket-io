@@ -103,7 +103,7 @@ io.on("connection", (socket) => {
       io.to(socket.id).emit("matchFound", { roomId });
       io.to(matchId).emit("matchFound", { roomId });
     }
-    console.log(`request:${userInfo}`);
+    console.log(`request:${userInfo.id},${userJoinRoom.mbtiType}`);
   });
 
   socket.on("leaveRoom", ({ userInfo, roomInfo }) => {
