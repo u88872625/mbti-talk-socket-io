@@ -95,13 +95,12 @@ io.on("connection", (socket) => {
     if (matchId && matchId !== userInfo.id) {
       const roomId = getRandomRoomNum();
       socket.join(roomId);
-      io.to(matchId).socketsJoin(roomId);
+      io.to(matchId).join(roomId);
 
       console.log(
         `Emitting matchFound to ${socket.id} and ${matchId} with roomId: ${roomId}`
       );
-      io.to(socket.id).emit("matchFound", { roomId });
-      io.to(matchId).emit("matchFound", { roomId });
+      io.to(roomId).emit("matchFound", { roomId });
     }
     console.log(`request:${userInfo.id},${userInfo.mbtiType}`);
   });
