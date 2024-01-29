@@ -16,8 +16,14 @@ const addToMatchQueue = (userInfo) => {
   if (!waitingForMatch[mbtiType]) {
     waitingForMatch[mbtiType] = [];
   }
-  waitingForMatch[mbtiType].push(id);
-  console.log(`User ${id} added to match queue for ${mbtiType}`);
+  if (!waitingForMatch[mbtiType].includes(id)) {
+    waitingForMatch[mbtiType].push(id);
+    console.log(`User ${id} added to match queue for ${mbtiType}`);
+  } else {
+    console.log(`User ${id} is already in the match queue for ${mbtiType}`);
+  }
+  // waitingForMatch[mbtiType].push(id);
+  // console.log(`User ${id} added to match queue for ${mbtiType}`);
 };
 
 const findMatch = (mbtiType, currentId) => {
@@ -29,6 +35,7 @@ const findMatch = (mbtiType, currentId) => {
     }
   }
   console.log(waitingForMatch);
+  console.log(`No match found for ${mbtiType} with ID ${currentId}`);
   return null;
 };
 
