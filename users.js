@@ -11,37 +11,31 @@ const addUser = ({ id, mbtiType, mbtiImage }) => {
   return { user };
 };
 
-const addToMatchQueue = (userInfo, preferredMatch) => {
+const addToMatchQueue = (userInfo) => {
+  const { mbtiType, preferredMatch } = userInfo;
+
   if (!waitingForMatch[preferredMatch]) {
     waitingForMatch[preferredMatch] = [];
   }
-
-  const userRecord = {
-    id: userInfo.id,
-    mbtiType: userInfo.mbtiType,
-    preferredMatch: preferredMatch, // 用户希望匹配的类型
-  };
-  waitingForMatch[preferredMatch].push(userRecord);
+  waitingForMatch[preferredMatch].push(userInfo);
   console.log(
-    `User ${userInfo.id} (${userInfo.mbtiType}) added to match queue for ${preferredMatch}`
+    `User ${userInfo.id} (${mbtiType}) added to match queue for ${preferredMatch}`
   );
-  // waitingForMatch[mbtiType].push(id);
-  // console.log(`User ${id} added to match queue for ${mbtiType}`);
 };
 
 const findMatch = (userInfo) => {
-  const { id, preferredMatch, mbtiType } = userInfo;
+  const { id, mbtiType } = userInfo;
+
   if (waitingForMatch[mbtiType]) {
-    for (let i = 0; i < waitingForMatch[mbtiType].length; i++) {
-      const match = waitingForMatch[mbtiType][i];
-      if (match.id !== id && match.preferredMatch === mbtiType) {
-        waitingForMatch[mbtiType].splice(i, 1);
-        return match.id;
-      }
+    const index = waitingForMatch[mbtiType].findIndex(
+      (match) => match.preferredMatch === mbtiType && match.id !== id
+    );
+    if (index !== -1) {
+      const [match] = waitingForMatch[mbtiType].splice(index, 1);
+      return match.id;
     }
   }
-  console.log(waitingForMatch);
-  console.log(`No match found for ${id} looking for ${preferredMatch}`);
+  console.log(`No match found for ${mbtiType} with ID ${id}`);
   return null;
 };
 
