@@ -11,39 +11,51 @@ const addUser = ({ id, mbtiType, mbtiImage }) => {
   return { user };
 };
 
-const addToMatchQueue = (userInfo) => {
-  const { id, mbtiType, preferredMatch } = userInfo;
-
-  if (!waitingForMatch[mbtiType]) {
-    waitingForMatch[mbtiType] = [];
+const addToMatchQueue = (userInfo, preferredMatch) => {
+  if (!waitingForMatch[userInfo.mbtiType]) {
+    waitingForMatch[userInfo.mbtiType] = [];
   }
-  waitingForMatch[mbtiType].push({ id, preferredMatch });
+  waitingForMatch[userInfo.mbtiType].push({
+    id: userInfo.id,
+    preferredMatch: preferredMatch,
+  });
   console.log(
-    `User ${id} (${mbtiType}) added to match queue for ${preferredMatch}`
+    `User ${userInfo.id} (${userInfo.mbtiType}) added to match queue for ${preferredMatch}`
   );
 };
 
 const findMatch = (userInfo) => {
-  const { id, mbtiType, preferredMatch } = userInfo;
-  if (waitingForMatch[preferredMatch]) {
-    for (let i = 0; i < waitingForMatch[preferredMatch].length; i++) {
-      const potentialMatch = waitingForMatch[preferredMatch][i];
-      if (potentialMatch.id !== id && waitingForMatch[mbtiType]) {
-        const index = waitingForMatch[mbtiType].findIndex(
-          (match) =>
-            match.id === potentialMatch.id && match.preferredMatch === mbtiType
-        );
-        if (index !== -1) {
-          waitingForMatch[preferredMatch].splice(i, 1);
-          waitingForMatch[mbtiType].splice(index, 1);
-          return potentialMatch.id;
+  let matchId = null;
+  Object.keys(waitingForMatch).forEach((type) => {
+    if (type === userInfo.preferredMatch) {
+      const matches = waitingForMatch[type];
+      for (let i = 0; i < matches.length; i++) {
+        const potentialMatch = matches[i];
+
+        if (
+          potentialMatch.preferredMatch === userInfo.mbtiType &&
+          potentialMatch.id !== userInfo.id
+        ) {
+          matchId = potentialMatch.id;
+
+          waitingForMatch[type].splice(i, 1);
+          break;
         }
       }
     }
+  });
+
+  if (matchId) {
+    console.log(
+      `Match found for ${userInfo.id} looking for ${userInfo.preferredMatch}`
+    );
+    return matchId;
+  } else {
+    console.log(
+      `No match found for ${userInfo.id} looking for ${userInfo.preferredMatch}`
+    );
+    return null;
   }
-  console.log(waitingForMatch);
-  console.log(`No match found for ${mbtiType} looking for ${preferredMatch}`);
-  return null;
 };
 
 // 選擇聊天模式
