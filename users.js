@@ -16,10 +16,12 @@ const addToMatchQueue = (userInfo, preferredMatch) => {
     waitingForMatch[preferredMatch] = [];
   }
 
-  waitingForMatch[preferredMatch].push({
+  const userRecord = {
     id: userInfo.id,
     mbtiType: userInfo.mbtiType,
-  });
+    preferredMatch: preferredMatch, // 用户希望匹配的类型
+  };
+  waitingForMatch[preferredMatch].push(userRecord);
   console.log(
     `User ${userInfo.id} (${userInfo.mbtiType}) added to match queue for ${preferredMatch}`
   );
@@ -27,17 +29,19 @@ const addToMatchQueue = (userInfo, preferredMatch) => {
   // console.log(`User ${id} added to match queue for ${mbtiType}`);
 };
 
-const findMatch = (preferredMatch, currentId) => {
-  if (waitingForMatch[preferredMatch]) {
-    for (let i = 0; i < waitingForMatch[preferredMatch].length; i++) {
-      if (waitingForMatch[preferredMatch][i].id !== currentId) {
-        const match = waitingForMatch[preferredMatch].splice(i, 1)[0];
+const findMatch = (userInfo) => {
+  const { id, preferredMatch, mbtiType } = userInfo;
+  if (waitingForMatch[mbtiType]) {
+    for (let i = 0; i < waitingForMatch[mbtiType].length; i++) {
+      const match = waitingForMatch[mbtiType][i];
+      if (match.id !== id && match.preferredMatch === mbtiType) {
+        waitingForMatch[mbtiType].splice(i, 1);
         return match.id;
       }
     }
   }
   console.log(waitingForMatch);
-  console.log(`No match found for ${preferredMatch} with ID ${currentId}`);
+  console.log(`No match found for ${id} looking for ${preferredMatch}`);
   return null;
 };
 
