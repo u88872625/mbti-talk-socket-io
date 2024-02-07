@@ -86,8 +86,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("requestMatch", ({ mbtiType, preferredMatch }) => {
-    const userInfo = { id: socket.id, mbtiType };
-    addToMatchQueue(userInfo, preferredMatch);
+    const userInfo = { id: socket.id, mbtiType, preferredMatch };
+    addToMatchQueue(userInfo);
 
     const matchId = findMatch(preferredMatch, userInfo.id);
     console.log(`Matching ID for ${preferredMatch}: ${matchId}`);
