@@ -29,16 +29,15 @@ const addToMatchQueue = (userInfo, preferredMatch) => {
 
 const findMatch = (preferredMatch, currentId) => {
   if (waitingForMatch[preferredMatch]) {
-    const index = waitingForMatch[preferredMatch].findIndex(
-      (match) => match.id !== currentId
-    );
-    if (index !== -1) {
-      const match = waitingForMatch[preferredMatch].slice(index, 1)[0];
-      return match.id;
+    for (let i = 0; i < waitingForMatch[preferredMatch].length; i++) {
+      if (waitingForMatch[preferredMatch][i].id !== currentId) {
+        const match = waitingForMatch[preferredMatch].splice(i, 1)[0];
+        return match.id;
+      }
     }
   }
   console.log(waitingForMatch);
-  console.log(`No match found for ${mbtiType} with ID ${currentId}`);
+  console.log(`No match found for ${preferredMatch} with ID ${currentId}`);
   return null;
 };
 
