@@ -14,24 +14,35 @@ const addUser = ({ id, mbtiType, mbtiImage }) => {
 const addToMatchQueue = (userInfo) => {
   const { id, mbtiType, preferredMatch } = userInfo;
 
-  if (!waitingForMatch[preferredMatch]) {
-    waitingForMatch[preferredMatch] = [];
+  if (!waitingForMatch[mbtiType]) {
+    waitingForMatch[mbtiType] = [];
   }
-  waitingForMatch[preferredMatch].push(userInfo);
+  waitingForMatch[mbtiType].push({ id, preferredMatch });
   console.log(
     `User ${id} (${mbtiType}) added to match queue for ${preferredMatch}`
   );
 };
 
-const findMatch = (preferredMatch, currentId, currentMbtiType) => {
-  if (waitingForMatch[currentMbtiType]) {
-    for (let i = 0; i < waitingForMatch[currentMbtiType].length; i++) {
-      const match = waitingForMatch[currentMbtiType][i];
-      if (match.id !== currentId && match.preferredMatch === currentMbtiType) {
-        return waitingForMatch[currentMbtiType].splice(i, 1)[0].id;
+const findMatch = (userInfo) => {
+  const { id, mbtiType, preferredMatch } = userInfo;
+  if (waitingForMatch[preferredMatch]) {
+    for (let i = 0; i < waitingForMatch[preferredMatch].length; i++) {
+      const potentialMatch = waitingForMatch[preferredMatch][i];
+      if (potentialMatch.id !== id && waitingForMatch[mbtiType]) {
+        const index = waitingForMatch[mbtiType].findIndex(
+          (match) =>
+            match.id === potentialMatch.id && match.preferredMatch === mbtiType
+        );
+        if (index !== -1) {
+          waitingForMatch[preferredMatch].splice(i, 1);
+          waitingForMatch[mbtiType].splice(index, 1);
+          return potentialMatch.id;
+        }
       }
     }
   }
+  console.log(waitingForMatch);
+  console.log(`No match found for ${mbtiType} looking for ${preferredMatch}`);
   return null;
 };
 
