@@ -12,30 +12,26 @@ const addUser = ({ id, mbtiType, mbtiImage }) => {
 };
 
 const addToMatchQueue = (userInfo) => {
-  const { mbtiType, preferredMatch } = userInfo;
+  const { id, mbtiType, preferredMatch } = userInfo;
 
   if (!waitingForMatch[preferredMatch]) {
     waitingForMatch[preferredMatch] = [];
   }
   waitingForMatch[preferredMatch].push(userInfo);
   console.log(
-    `User ${userInfo.id} (${mbtiType}) added to match queue for ${preferredMatch}`
+    `User ${id} (${mbtiType}) added to match queue for ${preferredMatch}`
   );
 };
 
-const findMatch = (userInfo) => {
-  const { id, mbtiType } = userInfo;
-
-  if (waitingForMatch[mbtiType]) {
-    const index = waitingForMatch[mbtiType].findIndex(
-      (match) => match.preferredMatch === mbtiType && match.id !== id
-    );
-    if (index !== -1) {
-      const [match] = waitingForMatch[mbtiType].splice(index, 1);
-      return match.id;
+const findMatch = (preferredMatch, currentId, currentMbtiType) => {
+  if (waitingForMatch[currentMbtiType]) {
+    for (let i = 0; i < waitingForMatch[currentMbtiType].length; i++) {
+      const match = waitingForMatch[currentMbtiType][i];
+      if (match.id !== currentId && match.preferredMatch === currentMbtiType) {
+        return waitingForMatch[currentMbtiType].splice(i, 1)[0].id;
+      }
     }
   }
-  console.log(`No match found for ${mbtiType} with ID ${id}`);
   return null;
 };
 

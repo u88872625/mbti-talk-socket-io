@@ -89,20 +89,25 @@ io.on("connection", (socket) => {
     const userInfo = { id: socket.id, mbtiType, preferredMatch };
     addToMatchQueue(userInfo);
 
-    const matchId = findMatch(preferredMatch, userInfo.id);
-    console.log(`Matching ID for ${preferredMatch}: ${matchId}`);
+    const matchId = findMatch(preferredMatch, userInfo.id, mbtiType);
 
-    if (matchId && matchId !== userInfo.id) {
+    if (matchId) {
       const roomId = getRandomRoomNum();
+
       socket.join(roomId);
-      io.to(matchId).socketsJoin(roomId);
+      io.to(matchId).join(roomId);
 
       console.log(
-        `Emitting matchFound to ${socket.id} and ${matchId} with roomId: ${roomId}`
+        `Match found: ${userInfo.id} and ${matchId} with roomId: ${roomId}`
       );
-      io.to(roomId).emit("matchFound", { roomId });
+
+      io.to(socket.id).emit("matchFound", { roomId });
+      io.to(matchId).emit("matchFound", { roomId });
+    } else {
+      console.log(
+        `No match found for ${userInfo.id} looking for ${preferredMatch}`
+      );
     }
-    console.log(`request:${userInfo.id},${userInfo.mbtiType}`);
   });
 
   socket.on("leaveRoom", ({ userInfo, roomInfo }) => {
