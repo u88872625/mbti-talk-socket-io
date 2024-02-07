@@ -95,7 +95,10 @@ io.on("connection", (socket) => {
       const roomId = getRandomRoomNum();
 
       socket.join(roomId);
-      io.to(matchId).join(roomId);
+      const matchSocket = io.sockets.sockets.get(matchId);
+      if (matchSocket) {
+        matchSocket.join(roomId);
+      }
 
       console.log(
         `Match found: ${userInfo.id} and ${matchId} with roomId: ${roomId}`
