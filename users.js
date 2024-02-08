@@ -27,11 +27,11 @@ const addToMatchQueue = (userInfo) => {
 const findMatch = (userInfo) => {
   const { id, mbtiType, preferredMatch } = userInfo;
 
-  if (waitingForMatch[mbtiType]) {
-    for (let i = 0; i < waitingForMatch[mbtiType].length; i++) {
-      const match = waitingForMatch[mbtiType][i];
-      if (match.mbtiType === preferredMatch && match.id !== id) {
-        const [matchedUser] = waitingForMatch[mbtiType].splice(i, 1);
+  if (waitingForMatch[preferredMatch]) {
+    for (let i = 0; i < waitingForMatch[preferredMatch].length; i++) {
+      const match = waitingForMatch[preferredMatch][i];
+      if (match.preferredMatch === mbtiType && match.id !== id) {
+        const [matchedUser] = waitingForMatch[preferredMatch].splice(i, 1);
         return matchedUser.id;
       }
     }
