@@ -38,7 +38,7 @@ const findMatch = (userInfo) => {
   }
 
   console.log(`No match found for ${id} looking for ${preferredMatch}`);
-  console.log(`matchedUser :${matchedUser}`);
+  console.log(`matchedUser :${matchedUser.id}`);
   return null;
 };
 
