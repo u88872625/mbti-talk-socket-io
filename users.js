@@ -11,51 +11,34 @@ const addUser = ({ id, mbtiType, mbtiImage }) => {
   return { user };
 };
 
-const addToMatchQueue = (userInfo, preferredMatch) => {
-  if (!waitingForMatch[userInfo.mbtiType]) {
-    waitingForMatch[userInfo.mbtiType] = [];
+const addToMatchQueue = (userInfo) => {
+  const { id, mbtiType, preferredMatch } = userInfo;
+
+  if (!waitingForMatch[preferredMatch]) {
+    waitingForMatch[preferredMatch] = [];
   }
-  waitingForMatch[userInfo.mbtiType].push({
-    id: userInfo.id,
-    preferredMatch: preferredMatch,
-  });
+
+  waitingForMatch[preferredMatch].push({ id, mbtiType });
   console.log(
-    `User ${userInfo.id} (${userInfo.mbtiType}) added to match queue for ${preferredMatch}`
+    `User ${id} (${mbtiType}) added to match queue for ${preferredMatch}`
   );
 };
 
 const findMatch = (userInfo) => {
-  let matchId = null;
-  Object.keys(waitingForMatch).forEach((type) => {
-    if (type === userInfo.preferredMatch) {
-      const matches = waitingForMatch[type];
-      for (let i = 0; i < matches.length; i++) {
-        const potentialMatch = matches[i];
+  const { id, mbtiType, preferredMatch } = userInfo;
 
-        if (
-          potentialMatch.preferredMatch === userInfo.mbtiType &&
-          potentialMatch.id !== userInfo.id
-        ) {
-          matchId = potentialMatch.id;
-
-          waitingForMatch[type].splice(i, 1);
-          break;
-        }
+  if (waitingForMatch[mbtiType]) {
+    for (let i = 0; i < waitingForMatch[mbtiType].length; i++) {
+      const match = waitingForMatch[mbtiType][i];
+      if (match.mbtiType === preferredMatch && match.id !== id) {
+        const [matchedUser] = waitingForMatch[mbtiType].splice(i, 1);
+        return matchedUser.id;
       }
     }
-  });
-
-  if (matchId) {
-    console.log(
-      `Match found for ${userInfo.id} looking for ${userInfo.preferredMatch}`
-    );
-    return matchId;
-  } else {
-    console.log(
-      `No match found for ${userInfo.id} looking for ${userInfo.preferredMatch}`
-    );
-    return null;
   }
+
+  console.log(`No match found for ${id} looking for ${preferredMatch}`);
+  return null;
 };
 
 // 選擇聊天模式
