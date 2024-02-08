@@ -18,7 +18,7 @@ const addToMatchQueue = (userInfo) => {
     waitingForMatch[preferredMatch] = [];
   }
 
-  waitingForMatch[preferredMatch].push({ id, mbtiType });
+  waitingForMatch[preferredMatch].push({ id, mbtiType, preferredMatch });
   console.log(
     `User ${id} (${mbtiType}) added to match queue for ${preferredMatch}`
   );
