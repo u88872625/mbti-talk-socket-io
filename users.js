@@ -32,13 +32,14 @@ const findMatch = (userInfo) => {
       const match = waitingForMatch[preferredMatch][i];
       if (match.preferredMatch === mbtiType && match.id !== id) {
         const [matchedUser] = waitingForMatch[preferredMatch].splice(i, 1);
+        console.log(`matchedUser :${matchedUser}`);
         return matchedUser.id;
       }
     }
   }
 
   console.log(`No match found for ${id} looking for ${preferredMatch}`);
-  console.log(`matchedUser :${matchedUser.id}`);
+
   return null;
 };
 
