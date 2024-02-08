@@ -89,7 +89,7 @@ io.on("connection", (socket) => {
     const userInfo = { id: socket.id, mbtiType, preferredMatch };
     addToMatchQueue(userInfo);
 
-    const matchId = findMatch(preferredMatch, userInfo.id, mbtiType);
+    const matchId = findMatch(userInfo);
 
     if (matchId) {
       const roomId = getRandomRoomNum();
