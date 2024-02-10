@@ -3,45 +3,11 @@ let userInLobby = [];
 let userInPassword = [];
 let userInRandom = [];
 let randomRooms = [];
-let waitingForMatch = {};
 
 const addUser = ({ id, mbtiType, mbtiImage }) => {
   const user = { id, mbtiType, mbtiImage };
   users.push(user);
   return { user };
-};
-
-const addToMatchQueue = (userInfo) => {
-  const { id, mbtiType, preferredMatch } = userInfo;
-
-  if (!waitingForMatch[preferredMatch]) {
-    waitingForMatch[preferredMatch] = [];
-  }
-
-  waitingForMatch[preferredMatch].push({ id, mbtiType, preferredMatch });
-  console.log(
-    `Added user ${id} with type ${mbtiType} looking for ${preferredMatch} to the queue.`
-  );
-  console.log(JSON.stringify(waitingForMatch, null, 2));
-};
-
-const findMatch = (userInfo) => {
-  const { id, mbtiType, preferredMatch } = userInfo;
-
-  if (waitingForMatch[preferredMatch]) {
-    for (let i = 0; i < waitingForMatch[preferredMatch].length; i++) {
-      const match = waitingForMatch[preferredMatch][i];
-      if (match.preferredMatch === mbtiType && match.id !== id) {
-        const [matchedUser] = waitingForMatch[preferredMatch].splice(i, 1);
-        console.log(`matchedUser :${matchedUser}`);
-        return matchedUser.id;
-      }
-    }
-  }
-
-  console.log(`No match found for ${id} looking for ${preferredMatch}`);
-
-  return null;
 };
 
 // 選擇聊天模式
@@ -104,8 +70,6 @@ const getRandomRoomNum = () => {
 module.exports = {
   addUser,
   userJoinRoom,
-  addToMatchQueue,
-  findMatch,
   getRandomRoomNum,
   removeUserFromRoom,
 };
