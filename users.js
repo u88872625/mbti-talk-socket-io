@@ -10,9 +10,11 @@ const addUser = ({ id, mbtiType, mbtiImage }) => {
 };
 
 // 選擇聊天模式
-const userJoinRoom = (userInfo, roomInfo) => {
-  const user = users.find((u) => u.id === userInfo.id);
-  if (user) {
+const userJoinRoom = (id, roomInfo) => {
+  const userIndex = users.findIndex((u) => u.id === id);
+  if (userIndex !== -1) {
+    const user = users[userIndex];
+
     user.roomInfo = roomInfo;
     switch (roomInfo.mode) {
       case "mbtiMatch":
@@ -30,7 +32,12 @@ const userJoinRoom = (userInfo, roomInfo) => {
     }
 
     if (!user.notifiedJoin) {
-      user.notifiedJoin = true;
+      io.to(roomInfo.room).emit("message", {
+        user: "admin",
+        text: `${user.mbtiType}已加入聊天室`,
+      });
+
+      users[userIndex].notifiedJoin = true;
     }
   }
 };
