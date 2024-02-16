@@ -53,10 +53,10 @@ io.on("connection", (socket) => {
           user: "admin",
           text: `${userInfo.mbtiType}已加入聊天室`,
         });
-        userInfo.notifiedJoin = true;
       }
-      socket.join(roomInfo.room);
+      userInfo.notifiedJoin = true;
     }
+    socket.join(roomInfo.room);
   });
 
   socket.on("sendMessage", ({ message, userInfo, roomInfo }) => {
