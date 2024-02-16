@@ -10,35 +10,17 @@ const addUser = ({ id, mbtiType, mbtiImage }) => {
 };
 
 // 選擇聊天模式
-const userJoinRoom = (id, roomInfo) => {
-  const userIndex = users.findIndex((u) => u.id === id);
-  if (userIndex !== -1) {
-    const user = users[userIndex];
-
-    user.roomInfo = roomInfo;
-    switch (roomInfo.mode) {
-      case "mbtiMatch":
-        if (!userInMbtiMatch.includes(user)) {
-          userInMbtiMatch.push(user);
-        }
-        break;
-      case "random":
-        if (!userInRandom.includes(user)) {
-          userInRandom.push(user);
-        }
-        break;
-      default:
-        return;
-    }
-
-    if (!user.notifiedJoin) {
-      io.to(roomInfo.room).emit("message", {
-        user: "admin",
-        text: `${user.mbtiType}已加入聊天室`,
-      });
-
-      users[userIndex].notifiedJoin = true;
-    }
+const userJoinRoom = (userInfo, roomInfo) => {
+  const user = { userInfo, roomInfo };
+  switch (roomInfo.mode) {
+    case "mbtiMatch":
+      userInMbtiMatch.push(user);
+      break;
+    case "random":
+      userInRandom.push(user);
+      break;
+    default:
+      return;
   }
 };
 

@@ -41,22 +41,21 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("join", ({ roomInfo }) => {
-    //userInfo
-    userJoinRoom(socket.id, roomInfo);
-    // if (!userInfo.notifiedJoin) {
-    //   if (userInfo.id && roomInfo.room) {
-    //     socket.emit("message", {
-    //       user: "admin",
-    //       text: `${userInfo.mbtiType}已加入聊天室`,
-    //     });
-    //     socket.broadcast.to(roomInfo.room).emit("message", {
-    //       user: "admin",
-    //       text: `${userInfo.mbtiType}已加入聊天室`,
-    //     });
-    //   }
-    //   userInfo.notifiedJoin = true;
-    // }
+  socket.on("join", ({ roomInfo, userInfo }) => {
+    userJoinRoom(userInfo, roomInfo);
+    if (!userInfo.notifiedJoin) {
+      if (userInfo.id && roomInfo.room) {
+        socket.emit("message", {
+          user: "admin",
+          text: `${userInfo.mbtiType}已加入聊天室`,
+        });
+        socket.broadcast.to(roomInfo.room).emit("message", {
+          user: "admin",
+          text: `${userInfo.mbtiType}已加入聊天室`,
+        });
+      }
+      userInfo.notifiedJoin = true;
+    }
     socket.join(roomInfo.room);
   });
 
