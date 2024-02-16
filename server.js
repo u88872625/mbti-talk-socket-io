@@ -49,10 +49,10 @@ io.on("connection", (socket) => {
           user: "admin",
           text: `${userInfo.mbtiType}已加入聊天室`,
         });
-        socket.broadcast.to(roomInfo.room).emit("message", {
-          user: "admin",
-          text: `${userInfo.mbtiType}已加入聊天室`,
-        });
+        // socket.broadcast.to(roomInfo.room).emit("message", {
+        //   user: "admin",
+        //   text: `${userInfo.mbtiType}已加入聊天室`,
+        // });
       }
       userInfo.notifiedJoin = true;
     }
