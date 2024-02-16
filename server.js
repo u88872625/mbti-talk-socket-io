@@ -83,6 +83,16 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("cancelRandomChat", () => {
+    const index = waitingUsers.findIndex(
+      (user) => user.socket.id === socket.id
+    );
+    if (index !== -1) {
+      waitingUsers.splice(index, 1);
+      console.log(`User ${socket.id} removed from the waiting queue.`);
+    }
+  });
+
   socket.on("leaveRoom", ({ userInfo, roomInfo }) => {
     removeUserFromRoom(userInfo, roomInfo);
     socket.leave(roomInfo.room);
