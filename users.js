@@ -1,11 +1,10 @@
 let users = [];
-let userInLobby = [];
-let userInPassword = [];
+let userInMbtiMatch = [];
 let userInRandom = [];
 let randomRooms = [];
 
 const addUser = ({ id, mbtiType, mbtiImage }) => {
-  const user = { id, mbtiType, mbtiImage };
+  const user = { id, mbtiType, mbtiImage, notifiedJoin: false };
   users.push(user);
   return { user };
 };
@@ -14,11 +13,8 @@ const addUser = ({ id, mbtiType, mbtiImage }) => {
 const userJoinRoom = (userInfo, roomInfo) => {
   const user = { userInfo, roomInfo };
   switch (roomInfo.mode) {
-    case "lobby":
-      userInLobby.push(user);
-      break;
-    case "password":
-      userInPassword.push(user);
+    case "mbtiMatch":
+      userInMbtiMatch.push(user);
       break;
     case "random":
       userInRandom.push(user);
@@ -26,18 +22,16 @@ const userJoinRoom = (userInfo, roomInfo) => {
     default:
       return;
   }
+  if (!userInfo.notifiedJoin) {
+    userInfo.notifiedJoin = true;
+  }
 };
 
 // 使用者離開聊天室
 const removeUserFromRoom = (userInfo, roomInfo) => {
   switch (roomInfo.mode) {
-    case "lobby":
-      userInLobby = userInLobby.filter(
-        (user) => user.userInfo.id !== userInfo.id
-      );
-      break;
-    case "password":
-      userInPassword = userInPassword.filter(
+    case "mbtiMatch":
+      userInMbtiMatch = userInMbtiMatch.filter(
         (user) => user.userInfo.id !== userInfo.id
       );
       break;

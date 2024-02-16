@@ -35,7 +35,6 @@ io.on("connection", (socket) => {
     const { error, user } = addUser({ id: socket.id, mbtiType, mbtiImage });
 
     if (user) {
-      console.log("Sending user info:", user);
       socket.emit("userInfo", user);
     } else {
       socket.emit("error", error);
@@ -44,18 +43,20 @@ io.on("connection", (socket) => {
 
   socket.on("join", ({ roomInfo, userInfo }) => {
     userJoinRoom(userInfo, roomInfo);
-
-    if (userInfo.id && roomInfo.room) {
-      socket.emit("message", {
-        user: "admin",
-        text: `${userInfo.mbtiType}已加入聊天室`,
-      });
-      socket.broadcast.to(roomInfo.room).emit("message", {
-        user: "admin",
-        text: `${userInfo.mbtiType}已加入聊天室`,
-      });
+    if (!userInfo.notifiedJoin) {
+      if (userInfo.id && roomInfo.room) {
+        socket.emit("message", {
+          user: "admin",
+          text: `${userInfo.mbtiType}已加入聊天室`,
+        });
+        socket.broadcast.to(roomInfo.room).emit("message", {
+          user: "admin",
+          text: `${userInfo.mbtiType}已加入聊天室`,
+        });
+        userInfo.notifiedJoin = true;
+      }
+      socket.join(roomInfo.room);
     }
-    socket.join(roomInfo.room);
   });
 
   socket.on("sendMessage", ({ message, userInfo, roomInfo }) => {
@@ -89,7 +90,6 @@ io.on("connection", (socket) => {
     );
     if (index !== -1) {
       waitingUsers.splice(index, 1);
-      console.log(`User ${socket.id} removed from the waiting queue.`);
     }
   });
 
