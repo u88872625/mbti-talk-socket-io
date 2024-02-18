@@ -42,6 +42,7 @@ const removeUserFromRoom = (userInfo, roomInfo) => {
   }
 };
 
+// 確認使用者是否已在房間內
 function checkIfUserIsInRoom(userId, roomId) {
   return userRoomMap.get(userId) === roomId;
 }
