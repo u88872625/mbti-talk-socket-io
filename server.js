@@ -42,9 +42,9 @@ io.on("connection", (socket) => {
   });
 
   socket.on("join", ({ roomInfo, userInfo }) => {
-    const { shouldNotify } = userJoinRoom(userInfo.id, roomInfo);
+    userJoinRoom(userInfo, roomInfo);
 
-    if (shouldNotify && roomInfo.room) {
+    if (userInfo.id && roomInfo.room) {
       socket.emit("message", {
         user: "admin",
         text: `${userInfo.mbtiType}已加入聊天室`,
@@ -54,7 +54,6 @@ io.on("connection", (socket) => {
         text: `${userInfo.mbtiType}已加入聊天室`,
       });
     }
-
     socket.join(roomInfo.room);
   });
 
