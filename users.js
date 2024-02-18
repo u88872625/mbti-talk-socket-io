@@ -10,18 +10,30 @@ const addUser = ({ id, mbtiType, mbtiImage }) => {
 };
 
 // 選擇聊天模式
-const userJoinRoom = (userInfo, roomInfo) => {
-  const user = { userInfo, roomInfo };
-  switch (roomInfo.mode) {
-    case "mbtiMatch":
-      userInMbtiMatch.push(user);
-      break;
-    case "random":
-      userInRandom.push(user);
-      break;
-    default:
-      return;
+const userJoinRoom = (id, roomInfo) => {
+  let user = users.find((user) => user.id === id);
+  let shouldNotify = false;
+  if (user) {
+    user.roomInfo = roomInfo;
+    switch (roomInfo.mode) {
+      case "mbtiMatch":
+        userInMbtiMatch.push(user);
+        break;
+      case "random":
+        userInRandom.push(user);
+        break;
+      default:
+        return { shouldNotify: false };
+    }
+
+    if (!user.notifiedJoin && roomInfo.room) {
+      user.notifiedJoin = true;
+      shouldNotify = true;
+    }
+  } else {
+    console.error("User not found with ID:", id);
   }
+  return { shouldNotify, roomInfo };
 };
 
 // 使用者離開聊天室
