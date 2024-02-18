@@ -42,7 +42,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("join", ({ roomInfo, userInfo }) => {
-    const { shouldNotify } = userJoinRoom({ id: userInfo.id, roomInfo });
+    const { shouldNotify } = userJoinRoom(userInfo.id, roomInfo);
 
     if (shouldNotify && roomInfo.room) {
       socket.emit("message", {
