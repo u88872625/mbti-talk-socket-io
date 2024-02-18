@@ -94,12 +94,12 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("typing", ({ uesrInfo, roomInfo }) => {
-    socket.to(roomInfo.room).emit("typing", { uesrInfo, isTyping: true });
+  socket.on("typing", ({ userInfo, roomInfo }) => {
+    socket.to(roomInfo.room).emit("typing", { userInfo, isTyping: true });
   });
 
-  socket.on("stopTyping", ({ uesrInfo, roomInfo }) => {
-    socket.to(roomInfo.room).emit("typing", { uesrInfo, isTyping: false });
+  socket.on("stopTyping", ({ userInfo, roomInfo }) => {
+    socket.to(roomInfo.room).emit("typing", { userInfo, isTyping: false });
   });
 
   socket.on("leaveRoom", ({ userInfo, roomInfo }) => {
