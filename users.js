@@ -2,6 +2,7 @@ let users = [];
 let userInMbtiMatch = [];
 let userInRandom = [];
 let randomRooms = [];
+const userRoomMap = new Map();
 
 const addUser = ({ id, mbtiType, mbtiImage }) => {
   const user = { id, mbtiType, mbtiImage, notifiedJoin: false };
@@ -11,11 +12,9 @@ const addUser = ({ id, mbtiType, mbtiImage }) => {
 
 // 選擇聊天模式
 const userJoinRoom = (userInfo, roomInfo) => {
+  userRoomMap.set(userInfo.id, roomInfo.room);
   const user = { userInfo, roomInfo };
   switch (roomInfo.mode) {
-    case "lobby":
-      userInLobby.push(user);
-      break;
     case "password":
       userInPassword.push(user);
       break;
@@ -28,6 +27,7 @@ const userJoinRoom = (userInfo, roomInfo) => {
 };
 // 使用者離開聊天室
 const removeUserFromRoom = (userInfo, roomInfo) => {
+  userRoomMap.delete(userInfo.id);
   switch (roomInfo.mode) {
     case "mbtiMatch":
       userInMbtiMatch = userInMbtiMatch.filter(
@@ -41,6 +41,10 @@ const removeUserFromRoom = (userInfo, roomInfo) => {
       break;
   }
 };
+
+function checkIfUserIsInRoom(userId, roomId) {
+  return userRoomMap.get(userId) === roomId;
+}
 
 // 隨機聊天
 const getRandomRoomNum = () => {
@@ -65,4 +69,5 @@ module.exports = {
   userJoinRoom,
   getRandomRoomNum,
   removeUserFromRoom,
+  checkIfUserIsInRoom,
 };

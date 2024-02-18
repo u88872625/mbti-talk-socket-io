@@ -8,6 +8,7 @@ const {
   userJoinRoom,
   getRandomRoomNum,
   removeUserFromRoom,
+  checkIfUserIsInRoom,
 } = require("./users");
 
 const PORT = process.env.PORT || 3000;
@@ -42,19 +43,21 @@ io.on("connection", (socket) => {
   });
 
   socket.on("join", ({ roomInfo, userInfo }) => {
-    userJoinRoom(userInfo, roomInfo);
+    if (!checkIfUserIsInRoom(userInfo.id, roomInfo.room)) {
+      userJoinRoom(userInfo, roomInfo);
 
-    if (userInfo.id && roomInfo.room) {
-      socket.emit("message", {
-        user: "admin",
-        text: `${userInfo.mbtiType}已加入聊天室`,
-      });
-      socket.broadcast.to(roomInfo.room).emit("message", {
-        user: "admin",
-        text: `${userInfo.mbtiType}已加入聊天室`,
-      });
+      if (userInfo.id && roomInfo.room) {
+        socket.emit("message", {
+          user: "admin",
+          text: `${userInfo.mbtiType}已加入聊天室`,
+        });
+        socket.broadcast.to(roomInfo.room).emit("message", {
+          user: "admin",
+          text: `${userInfo.mbtiType}已加入聊天室`,
+        });
+      }
+      socket.join(roomInfo.room);
     }
-    socket.join(roomInfo.room);
   });
 
   socket.on("sendMessage", ({ message, userInfo, roomInfo }) => {
